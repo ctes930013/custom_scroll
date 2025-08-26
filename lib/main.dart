@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 void main() {
   runApp(const MyApp());
@@ -46,6 +47,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> with SingleTicker
   // 為每個區塊設置 GlobalKey
   final List<GlobalKey> _keys = List.generate(3, (_) => GlobalKey());
   bool _isProgrammaticTabChange = false;    // 標記是否是程式碼觸發的 Tab 切換
+  String _htmlTag = """
+        <ul>
+          <li>絕美機身設計,放哪都百搭</li>
+          <li>多項安全偵測,全面防止夾貓</li>
+          <li>智能App連線,輕鬆遠端操控與監測</li>
+          <li>獨家自動物理封袋技術,異味細菌不擴散</li>
+        </ul>
+        <img src="https://pgw.udn.com.tw/gw/photo.php?u=https://uc.udn.com.tw/photo/2025/07/17/realtime/32606375.jpg&s=Y&x=0&y=0&sw=3000&sh=2000&h=300&w=400" />
+        <img src="https://pgw.udn.com.tw/gw/photo.php?u=https://uc.udn.com.tw/photo/2025/07/19/2/32630971.jpg&s=Y&x=0&y=0&sw=3000&sh=2000&h=300&w=400" />
+        <img src="https://pgw.udn.com.tw/gw/photo.php?u=https://uc.udn.com.tw/photo/2025/07/17/realtime/32606289.jpg&s=Y&x=0&y=0&sw=3535&sh=2357&h=300&w=400" />
+        <p class="fancy">Here's a fancy &lt;p&gt; element!</p>
+        """;
 
   // 滾動到指定區塊
   void _scrollToSection(int index) {
@@ -181,12 +194,28 @@ class _ProductDetailPageState extends State<ProductDetailPage> with SingleTicker
                       children: [
                         Text('商品詳情', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                         SizedBox(height: 8),
-                        for (int i = 0; i < 4; i++)
-                          Container(
-                            height: 200,
-                            color: Colors.yellow[100],
-                            child: Center(child: Text('商品詳情內容')),
-                          ),
+                        Html(
+                          data: _htmlTag,
+                          extensions: [
+                            TagExtension(
+                              tagsToExtend: {"flutter"},
+                              child: const FlutterLogo(),
+                            ),
+                            OnImageTapExtension(
+                              onImageTap: (src, imgAttributes, element) {
+                                print(src);
+                              },
+                            ),
+                          ],
+                          style: {
+                            "p.fancy": Style(
+                              textAlign: TextAlign.center,
+                              padding: HtmlPaddings.all(16),
+                              backgroundColor: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          },
+                        ),
                       ],
                     ),
                   ),
